@@ -12,24 +12,29 @@ st.markdown("""
     .block-container { padding-top: 3.5rem !important; max-width: 950px; }
     #MainMenu, footer {visibility: hidden;}
 
-    .form-container { background: white; border-radius: 16px; padding: 40px; border: 1px solid rgba(229,231,235,0.6); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08); max-width: 650px; margin: 0 auto; }
+    .form-container { background: white; border-radius: 16px 16px 0 0; padding: 40px 40px 10px 40px; border: 1px solid rgba(229,231,235,0.6); border-bottom: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08); max-width: 650px; margin: 0 auto; }
     .form-header { color: #1A56DB; font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
     .form-header span { color: #059669; }
-    .form-subtext { color: #6B7280; font-size: 0.95rem; margin-bottom: 30px; }
+    .form-subtext { color: #6B7280; font-size: 0.95rem; margin-bottom: 10px; }
     
     .back-btn div.stButton > button { background: transparent !important; color: #4B5563 !important; width: auto !important; height: auto !important; padding: 0 !important; font-size: 1.5rem !important; margin-bottom: 15px; border: none; }
-    .submit-btn div.stButton > button { background: linear-gradient(90deg, #1A56DB 0%, #059669 100%) !important; color: white !important; margin-top: 15px; border-radius: 8px; height: 48px; font-weight: 600; width: 100%; border: none; }
+    
+    /* Submit Button Gradient */
+    .submit-btn div.stButton > button { background: linear-gradient(90deg, #1A56DB 0%, #059669 100%) !important; color: white !important; margin-top: 20px; border-radius: 8px; height: 48px; font-weight: 600; width: 100%; border: none; transition: 0.3s;}
+    .submit-btn div.stButton > button:hover { box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4); }
     </style>
 """, unsafe_allow_html=True)
 
 spacer1, center_col, spacer2 = st.columns([1, 2, 1])
 
 with center_col:
+    # Back Button
     st.markdown('<div class="back-btn">', unsafe_allow_html=True)
     if st.button("←", key="back_btn"):
-        st.switch_page("app.py") # Wapas Home par bhejne ka code
+        st.switch_page("app.py")
     st.markdown('</div>', unsafe_allow_html=True)
     
+    # Top half of the white card
     st.markdown("""
         <div class="form-container">
             <div class="form-header">
@@ -40,16 +45,21 @@ with center_col:
         </div>
     """, unsafe_allow_html=True)
 
+    # Bottom half of the white card (Inputs + Button)
     with st.container():
+        st.markdown('<div style="background: white; padding: 0 40px 40px 40px; border-radius: 0 0 16px 16px; border: 1px solid rgba(229,231,235,0.6); border-top: none; max-width: 650px; margin: 0 auto; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);">', unsafe_allow_html=True)
+        
+        name = st.text_input("Full Name", placeholder="Enter your name")
+        addiction_type = st.selectbox("What are you looking to quit?", ["Smoking (Cigarettes)", "Alcohol", "Chewing Tobacco"])
+        usage = st.text_input("Current daily usage", placeholder="e.g., 10 cigarettes")
+        cost = st.text_input("Cost per pack/unit (₹)", placeholder="e.g., 150")
+        st.caption("This helps calculate your savings over time")
+        
         st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
         if st.button("Create My Plan", use_container_width=True):
-            # Data save kar rahe hain session_state mein
-            st.session_state.patient_name = name
-            st.session_state.patient_addiction = addiction_type
-            st.session_state.patient_usage = usage
-            st.session_state.patient_cost = cost
-            
-            # Dashboard par bhej rahe hain
+            # Form ka data save karke Dashboard par bhej rahe hain
+            st.session_state['patient_name'] = name
+            st.session_state['patient_usage'] = usage
             st.switch_page("pages/dashboard.py")
         st.markdown('</div></div>', unsafe_allow_html=True)
       

@@ -59,7 +59,6 @@ def show_tcc_popup():
         image_url = "https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/dr_hemant.jpg.jpeg"
         st.markdown(f'<img src="{image_url}" class="dr-img">', unsafe_allow_html=True)
 
-
 # --- 2. DEVELOPER POPUP DIALOG ---
 @st.dialog("Developer Information", width="large")
 def show_dev_popup():
@@ -97,7 +96,6 @@ def show_dev_popup():
                 <div class="dev-email">📧 <a href="mailto:laxmirajsharma06@gmail.com">laxmirajsharma06@gmail.com</a></div>
             </div>
         ''', unsafe_allow_html=True)
-
 
 # --- 3. MAIN PAGE STYLES ---
 st.markdown("""
@@ -204,7 +202,6 @@ with tab1:
             st.write(f"**Goal:** Limit consumption to {target} units per day.")
             st.checkbox(f"I completed my targets for Week {week}", key=f"w{week}")
             
-# --- NEW: DAILY TASKS TAB ---
 with tab2: 
     st.markdown("""
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
@@ -214,7 +211,6 @@ with tab2:
         <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 25px;">Complete these daily activities to support your recovery</p>
     """, unsafe_allow_html=True)
 
-    # Ye wo list hai jise Dentist baad mein customize kar sakte hain
     daily_tasks_list = [
         "Take a 5-minute walk",
         "Drink 2L of water",
@@ -223,19 +219,52 @@ with tab2:
         "Avoid triggers (identify and note them)"
     ]
 
-    # Har ek task ko ek sundar card (border) mein dikhana
     for i, task in enumerate(daily_tasks_list):
         with st.container(border=True):
             st.checkbox(task, key=f"daily_task_{i}")
             
     st.markdown("<p style='color: #9CA3AF; font-size: 0.8rem; margin-top: 15px;'>Note: Your dentist can customize this checklist specifically for you</p>", unsafe_allow_html=True)
 
-with tab3: st.write("Health recovery coming soon...")
+# --- NEW: HEALTH RECOVERY TAB ---
+with tab3: 
+    st.markdown("""
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <h3 style="margin: 0; color: #111827;">Health Recovery Milestones</h3>
+        </div>
+        <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 25px;">Track your body's healing progress over time</p>
+    """, unsafe_allow_html=True)
+
+    # Detailed milestone list based on your request
+    milestones = [
+        {"icon": "🌬️", "time": "8 hours", "desc": "Oxygen levels returning to normal"},
+        {"icon": "📉", "time": "12 hours", "desc": "Carbon monoxide levels in your blood drop to normal"},
+        {"icon": "❤️", "time": "24 hours", "desc": "Risk of heart attack begins to drop"},
+        {"icon": "👅", "time": "2 days", "desc": "Nerve endings start to regrow; sense of smell and taste improve"},
+        {"icon": "🫁", "time": "4 days", "desc": "Nicotine is mostly out of your body; breathing becomes easier"},
+        {"icon": "🧠", "time": "1 week", "desc": "Cravings begin to reduce in frequency and intensity"},
+        {"icon": "💪", "time": "2 weeks", "desc": "Circulation and lung function significantly improve"},
+        {"icon": "🏃", "time": "1-3 months", "desc": "Coughing, shortness of breath, and fatigue improve"},
+        {"icon": "💚", "time": "1 year", "desc": "Risk of heart disease is reduced by 50%"}
+    ]
+
+    for m in milestones:
+        st.markdown(f'''
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+                <div style="font-size: 22px; background: white; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid #E2E8F0; flex-shrink: 0;">{m["icon"]}</div>
+                <div>
+                    <div style="font-weight: 700; color: #1E293B; font-size: 0.95rem;">{m["time"]}</div>
+                    <div style="color: #4B5563; font-size: 0.85rem;">{m["desc"]}</div>
+                </div>
+            </div>
+        ''', unsafe_allow_html=True)
+
+
 with tab4: st.write("Analytics coming soon...")
 
 st.markdown("<br><hr style='opacity: 0.2;'>", unsafe_allow_html=True)
 
-# --- 4. BOTTOM BUTTONS ---
+# --- 4. BOTTOM BUTTONS (Triggers) ---
 st.markdown('<div class="tcc-btn">', unsafe_allow_html=True)
 if st.button("📞 Contact TCC - Tobacco Cessation Cell", use_container_width=True):
     show_tcc_popup()

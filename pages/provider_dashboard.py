@@ -42,19 +42,19 @@ def show_co_dialog(default_name=None):
     st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 2. RECORD CASE HISTORY DIALOG ---
-@st.dialog("Record Case History")
+@st.dialog("Record Case History", width="large")
 def show_history_dialog(default_name=None):
     st.write("Add detailed case history for the patient")
     default_idx = patient_names.index(default_name) if default_name in patient_names else 0
     
     st.selectbox("Select Patient", options=patient_names, index=default_idx)
-    st.text_area("Diagnosis *", placeholder="Enter diagnosis details...")
-    st.text_area("Treatment Plan *", placeholder="Enter treatment plan...")
-    st.text_area("Additional Notes", placeholder="Any additional information...")
+    st.text_area("Diagnosis *", placeholder="Enter diagnosis details...", height=100)
+    st.text_area("Treatment Plan *", placeholder="Enter treatment plan...", height=100)
+    st.text_area("Additional Notes", placeholder="Any additional information...", height=80)
     
     st.markdown("""
         <style>
-        .save-hist-btn div.stButton > button { background: linear-gradient(90deg, #7E22CE 0%, #9333EA 100%) !important; color: white !important; border-radius: 8px; font-weight: 600; width: 100%; border: none; transition: 0.3s; }
+        .save-hist-btn div.stButton > button { background: linear-gradient(90deg, #7E22CE 0%, #3B82F6 100%) !important; color: white !important; border-radius: 8px; font-weight: 600; width: 100%; border: none; transition: 0.3s; }
         .save-hist-btn div.stButton > button:hover { box-shadow: 0 4px 12px rgba(126, 34, 206, 0.4); }
         </style>
     """, unsafe_allow_html=True)
@@ -104,8 +104,9 @@ st.markdown("""
     .action-btn div.stButton > button { background: #F8FAFC !important; color: #4B5563 !important; border: 1px solid #E2E8F0 !important; font-weight: 600; border-radius: 6px; }
     .action-btn div.stButton > button:hover { background: #F1F5F9 !important; border-color: #CBD5E1 !important; color: #0F172A !important; }
 
-    /* CO Reading Tab Specific Styles */
+    /* Tab Specific Styles */
     .add-reading-btn div.stButton > button { background-color: #1A56DB !important; color: white !important; border-radius: 6px; font-weight: 600; border: none; }
+    .add-history-btn div.stButton > button { background-color: #9333EA !important; color: white !important; border-radius: 6px; font-weight: 600; border: none; }
     .empty-state { text-align: center; color: #9CA3AF; padding: 40px 0; font-size: 0.95rem; }
     </style>
 """, unsafe_allow_html=True)
@@ -169,14 +170,25 @@ with tab2:
         with col_btn:
             st.markdown('<div class="add-reading-btn">', unsafe_allow_html=True)
             if st.button("➕ Add Reading", use_container_width=True):
-                show_co_dialog() # Opens dialog without pre-selecting a patient
+                show_co_dialog() 
             st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('<hr style="margin: 10px 0; border-color: #E2E8F0; opacity: 0.5;">', unsafe_allow_html=True)
         st.markdown('<div class="empty-state">No CO readings recorded yet</div>', unsafe_allow_html=True)
 
 with tab3:
-    st.info("Case History management interface coming soon.")
+    with st.container(border=True):
+        col_title, col_btn = st.columns([4, 1])
+        with col_title:
+            st.markdown('<div style="font-weight: 700; color: #111827; font-size: 1.1rem; padding-top: 8px;">📄 Patient Case Histories</div>', unsafe_allow_html=True)
+        with col_btn:
+            st.markdown('<div class="add-history-btn">', unsafe_allow_html=True)
+            if st.button("➕ Add Case History", use_container_width=True):
+                show_history_dialog() 
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('<hr style="margin: 10px 0; border-color: #E2E8F0; opacity: 0.5;">', unsafe_allow_html=True)
+        st.markdown('<div class="empty-state">No case histories recorded yet</div>', unsafe_allow_html=True)
 
 with tab4:
     st.info("Daily Tasks customization interface coming soon.")

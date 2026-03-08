@@ -61,7 +61,7 @@ with center_col:
             if username == "dentist" and password == "admin123":
                 st.success("Login successful! Redirecting to dashboard...")
                 time.sleep(1) # Small delay to show the success message
-                # st.switch_page("pages/provider_dashboard.py") -> We will uncomment this when we build the next page!
+                 st.switch_page("pages/provider_dashboard.py") -> We will uncomment this when we build the next page!
             else:
                 st.error("Incorrect credentials. Please use the demo login.")
         st.markdown('</div>', unsafe_allow_html=True)

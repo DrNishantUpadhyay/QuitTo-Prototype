@@ -80,7 +80,7 @@ def show_dev_popup():
     with c1:
         st.markdown(f'''
             <div class="dev-card">
-                <img src="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/dr_nishant.jpg" class="dev-img">
+                <img src="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/dr_nishant.jpg.jpeg" class="dev-img">
                 <div class="dev-name">Dr. Nishant Upadhyay</div>
                 <div class="dev-role">Founder & Lead Developer</div>
                 <div class="dev-email">📧 <a href="mailto:nishant78913@gmail.com">nishant78913@gmail.com</a></div>
@@ -90,7 +90,7 @@ def show_dev_popup():
     with c2:
         st.markdown(f'''
             <div class="dev-card">
-                <img src="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/laxmi_sharma.jpg" class="dev-img">
+                <img src="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/laxmi_sharma.jpg.jpeg" class="dev-img">
                 <div class="dev-name">Laxmi Raj Sharma</div>
                 <div class="dev-role">Co-Founder & UI/UX Lead</div>
                 <div class="dev-email">📧 <a href="mailto:laxmirajsharma06@gmail.com">laxmirajsharma06@gmail.com</a></div>

@@ -41,7 +41,7 @@ with center_col:
     """, unsafe_allow_html=True)
 
     with st.container():
-       st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
+        st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
         if st.button("Create My Plan", use_container_width=True):
             # Data save kar rahe hain session_state mein
             st.session_state.patient_name = name
@@ -52,3 +52,4 @@ with center_col:
             # Dashboard par bhej rahe hain
             st.switch_page("pages/dashboard.py")
         st.markdown('</div></div>', unsafe_allow_html=True)
+      

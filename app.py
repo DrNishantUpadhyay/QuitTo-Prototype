@@ -48,47 +48,24 @@ st.markdown("""
         box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
         text-align: center;
         height: 350px;
-        transition: transform 0.3s ease;
-    }
-    .figma-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0px 15px 35px rgba(21, 101, 192, 0.1);
     }
 
-    /* 5. Icons in Cards */
-    .icon-box {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px auto;
-        font-size: 30px;
-    }
-
-    /* 6. Custom Buttons Styling */
+    /* 5. Custom Buttons Styling */
     div.stButton > button {
         border-radius: 10px;
         height: 50px;
         font-weight: 600;
         font-size: 1rem;
-        transition: all 0.3s;
+        background-color: #1D61F2 !important;
+        color: white !important;
         border: none;
         width: 100%;
     }
-    /* Patient Button (Blue) */
-    .patient-btn div.stButton > button {
-        background-color: #1D61F2 !important;
-        color: white !important;
-    }
-    /* Provider Button (Green) */
+    
     .provider-btn div.stButton > button {
         background-color: #00A651 !important;
-        color: white !important;
     }
 
-    /* 7. Bottom Feature Cards */
     .feature-card {
         background: white;
         border-radius: 15px;
@@ -111,28 +88,24 @@ col1, col2 = st.columns(2, gap="large")
 with col1:
     st.markdown("""
         <div class="figma-card">
-            <div class="icon-box" style="background: #E3F2FD; color: #1D61F2;">👤</div>
+            <div style="background: #E3F2FD; color: #1D61F2; width:70px; height:70px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px auto; font-size:30px;">👤</div>
             <h2 style="color: #263238;">I'm a Patient</h2>
             <p style="color: #78909C; font-size: 0.95rem;">Start your personalized recovery journey with a 12-week reduction schedule</p>
         </div>
     """, unsafe_allow_html=True)
-    # Applying custom class to button via container
-    st.markdown('<div class="patient-btn">', unsafe_allow_html=True)
     if st.button("Get Started", key="pt_btn"):
-        st.write("Navigating to Patient Portal...")
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.session_state.page = "patient_portal"
 
 with col2:
     st.markdown("""
         <div class="figma-card">
-            <div class="icon-box" style="background: #E8F5E9; color: #00A651;">💖</div>
+            <div style="background: #E8F5E9; color: #00A651; width:70px; height:70px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px auto; font-size:30px;">💖</div>
             <h2 style="color: #263238;">Healthcare Provider</h2>
             <p style="color: #78909C; font-size: 0.95rem;">Monitor your patients' progress and record health metrics</p>
         </div>
     """, unsafe_allow_html=True)
     st.markdown('<div class="provider-btn">', unsafe_allow_html=True)
-    if st.button("Provider Login", key="pr_btn"):
-        st.write("Navigating to Provider Portal...")
+    st.button("Provider Login", key="pr_btn")
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<br><br>", unsafe_allow_html=True)
@@ -154,4 +127,15 @@ with f2:
         <div class="feature-card" style="border-left: 5px solid #00A651;">
             <p style="font-size: 20px;">⚕️</p>
             <h4 style="margin-bottom:0;">Health Tracking</h4>
-            <p style="font-size: 0.8rem; color: #90A4AE
+            <p style="font-size: 0.8rem; color: #90A4AE;">Monitor your recovery with real-time health milestones</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+with f3:
+    st.markdown("""
+        <div class="feature-card" style="border-left: 5px solid #9C27B0;">
+            <p style="font-size: 20px;">🍷</p>
+            <h4 style="margin-bottom:0;">Multiple Addictions</h4>
+            <p style="font-size: 0.8rem; color: #90A4AE;">Support for smoking, tobacco, and alcohol cessation</p>
+        </div>
+    """, unsafe_allow_html=True)

@@ -41,15 +41,14 @@ with center_col:
     """, unsafe_allow_html=True)
 
     with st.container():
-        st.markdown('<div style="background: white; padding: 0 40px 40px 40px; border-radius: 0 0 16px 16px; border: 1px solid rgba(229,231,235,0.6); border-top: none; margin-top: -15px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);">', unsafe_allow_html=True)
-        
-        name = st.text_input("Full Name", placeholder="Enter your name")
-        addiction_type = st.selectbox("What are you looking to quit?", ["Smoking (Cigarettes)", "Alcohol", "Chewing Tobacco"])
-        usage = st.text_input("Current daily usage", placeholder="e.g., 10 cigarettes")
-        cost = st.text_input("Cost per pack/unit (₹)", placeholder="e.g., 150")
-        st.caption("This helps calculate your savings over time")
-        
-        st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
+       st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
         if st.button("Create My Plan", use_container_width=True):
-            st.success("Perfect! Your plan is being generated...")
+            # Data save kar rahe hain session_state mein
+            st.session_state.patient_name = name
+            st.session_state.patient_addiction = addiction_type
+            st.session_state.patient_usage = usage
+            st.session_state.patient_cost = cost
+            
+            # Dashboard par bhej rahe hain
+            st.switch_page("pages/dashboard.py")
         st.markdown('</div></div>', unsafe_allow_html=True)

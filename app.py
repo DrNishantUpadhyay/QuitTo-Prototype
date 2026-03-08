@@ -3,139 +3,249 @@ import streamlit as st
 # Page Configuration
 st.set_page_config(page_title="QuitTo", page_icon="💙", layout="wide")
 
-# Custom CSS to match Figma exactly
+# Custom CSS for the exact Figma look
 st.markdown("""
     <style>
-    /* 1. Gradient Background for the whole app */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    /* 1. Full App Soft Gradient Background */
     .stApp {
-        background: linear-gradient(180deg, #E3F2FD 0%, #FFFFFF 40%);
+        background: linear-gradient(180deg, #EBF8FF 0%, #FFFFFF 45%);
         font-family: 'Inter', sans-serif;
     }
 
-    /* 2. Remove default Streamlit padding */
+    /* 2. Center layout and remove default top padding */
     .block-container {
-        padding-top: 2rem;
-        max-width: 1000px;
+        padding-top: 3.5rem !important;
+        max-width: 950px;
     }
 
-    /* 3. Title Styling */
-    .main-title {
-        color: #1565C0;
-        font-size: 3rem !important;
-        font-weight: 800;
+    /* Hide Streamlit top menu and footer for app-like feel */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* 3. Header Styling */
+    .header-container {
         text-align: center;
-        margin-bottom: 0px;
+        margin-bottom: 50px;
+    }
+    .main-logo {
+        color: #1A56DB;
+        font-size: 3.2rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 15px;
+        letter-spacing: -0.5px;
     }
     .tagline {
-        text-align: center;
-        color: #546E7A;
-        font-size: 1.2rem;
-        margin-top: -10px;
+        color: #4B5563;
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 8px;
     }
     .sub-tagline {
-        text-align: center;
-        color: #90A4AE;
+        color: #9CA3AF;
         font-size: 0.9rem;
-        margin-bottom: 40px;
+        font-weight: 400;
     }
 
-    /* 4. Figma-style Cards */
-    .figma-card {
-        background: white;
-        border-radius: 20px;
-        padding: 40px 20px;
-        border: 1px solid #E0E0E0;
-        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
+    /* 4. Figma Cards Styling */
+    .card-container {
+        background-color: #ffffff;
+        border-radius: 16px;
+        padding: 40px 30px 25px 30px;
+        border: 1px solid rgba(229, 231, 235, 0.6);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
         text-align: center;
-        height: 350px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: all 0.3s ease;
+    }
+    .card-container:hover {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        transform: translateY(-3px);
     }
 
-    /* 5. Custom Buttons Styling */
+    /* 5. Icon Circles */
+    .icon-wrapper-blue {
+        background-color: #1A56DB;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px auto;
+        color: white;
+        box-shadow: 0 8px 16px rgba(26, 86, 219, 0.25);
+    }
+    .icon-wrapper-green {
+        background-color: #059669;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px auto;
+        color: white;
+        box-shadow: 0 8px 16px rgba(5, 150, 105, 0.25);
+    }
+
+    /* 6. Typography in Cards */
+    .card-title {
+        color: #111827;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+    .card-text {
+        color: #6B7280;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 30px;
+        padding: 0 10px;
+    }
+
+    /* 7. Button Overrides */
     div.stButton > button {
-        border-radius: 10px;
-        height: 50px;
+        border-radius: 8px;
+        height: 48px;
         font-weight: 600;
-        font-size: 1rem;
-        background-color: #1D61F2 !important;
-        color: white !important;
+        font-size: 0.95rem;
         border: none;
         width: 100%;
+        transition: all 0.2s;
     }
-    
+    /* Patient Button */
+    .patient-btn div.stButton > button {
+        background-color: #1A56DB !important;
+        color: white !important;
+    }
+    .patient-btn div.stButton > button:hover {
+        background-color: #1E40AF !important;
+    }
+    /* Provider Button */
     .provider-btn div.stButton > button {
-        background-color: #00A651 !important;
+        background-color: #059669 !important;
+        color: white !important;
+    }
+    .provider-btn div.stButton > button:hover {
+        background-color: #047857 !important;
     }
 
-    .feature-card {
+    /* 8. Bottom Features */
+    .feature-box {
         background: white;
-        border-radius: 15px;
-        padding: 20px;
+        border-radius: 12px;
+        padding: 24px 20px;
         text-align: center;
-        border: 1px solid #F0F2F6;
-        height: 150px;
+        border: 1px solid rgba(229, 231, 235, 0.6);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+        height: 100%;
+    }
+    .feature-icon {
+        font-size: 26px;
+        margin-bottom: 15px;
+    }
+    .feature-title {
+        color: #111827;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+    .feature-desc {
+        color: #6B7280;
+        font-size: 0.8rem;
+        line-height: 1.4;
     }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # --- HEADER SECTION ---
-st.markdown("<h1 class='main-title'>💙 Quit.To</h1>", unsafe_allow_html=True)
-st.markdown("<p class='tagline'>Your journey to a healthier life through incremental harm reduction</p>", unsafe_allow_html=True)
-st.markdown("<p class='sub-tagline'>A science-backed 'Slow-Quit' method for smoking, alcohol, and tobacco cessation</p>", unsafe_allow_html=True)
+st.markdown("""
+    <div class="header-container">
+        <div class="main-logo">
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path><polyline points="12 6 12 11 15 14"></polyline></svg>
+            QuitTo
+        </div>
+        <div class="tagline">Your journey to a healthier life through incremental harm reduction</div>
+        <div class="sub-tagline">A science-backed "Slow-Quit" method for smoking, alcohol, and tobacco cessation</div>
+    </div>
+""", unsafe_allow_html=True)
 
 # --- MAIN CARDS SECTION ---
 col1, col2 = st.columns(2, gap="large")
 
 with col1:
     st.markdown("""
-        <div class="figma-card">
-            <div style="background: #E3F2FD; color: #1D61F2; width:70px; height:70px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px auto; font-size:30px;">👤</div>
-            <h2 style="color: #263238;">I'm a Patient</h2>
-            <p style="color: #78909C; font-size: 0.95rem;">Start your personalized recovery journey with a 12-week reduction schedule</p>
+        <div class="card-container">
+            <div>
+                <div class="icon-wrapper-blue">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="card-title">I'm a Patient</div>
+                <div class="card-text">Start your personalized recovery journey with a 12-week reduction schedule</div>
+            </div>
         </div>
     """, unsafe_allow_html=True)
+    
+    st.markdown('<div class="patient-btn">', unsafe_allow_html=True)
     if st.button("Get Started", key="pt_btn"):
         st.session_state.page = "patient_portal"
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
     st.markdown("""
-        <div class="figma-card">
-            <div style="background: #E8F5E9; color: #00A651; width:70px; height:70px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px auto; font-size:30px;">💖</div>
-            <h2 style="color: #263238;">Healthcare Provider</h2>
-            <p style="color: #78909C; font-size: 0.95rem;">Monitor your patients' progress and record health metrics</p>
+        <div class="card-container">
+            <div>
+                <div class="icon-wrapper-green">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path></svg>
+                </div>
+                <div class="card-title">Healthcare Provider</div>
+                <div class="card-text">Monitor your patients' progress and record health metrics</div>
+            </div>
         </div>
     """, unsafe_allow_html=True)
+    
     st.markdown('<div class="provider-btn">', unsafe_allow_html=True)
-    st.button("Provider Login", key="pr_btn")
+    if st.button("Provider Login", key="pr_btn"):
+        pass
     st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 # --- BOTTOM FEATURES SECTION ---
 f1, f2, f3 = st.columns(3)
 
 with f1:
     st.markdown("""
-        <div class="feature-card" style="border-left: 5px solid #1D61F2;">
-            <p style="font-size: 20px;">🚬</p>
-            <h4 style="margin-bottom:0;">12-Week Plan</h4>
-            <p style="font-size: 0.8rem; color: #90A4AE;">Gradual reduction schedule tailored to your needs</p>
+        <div class="feature-box">
+            <div class="feature-icon" style="color: #1A56DB;">🚬</div>
+            <div class="feature-title">12-Week Plan</div>
+            <div class="feature-desc">Gradual reduction schedule tailored to your needs</div>
         </div>
     """, unsafe_allow_html=True)
 
 with f2:
     st.markdown("""
-        <div class="feature-card" style="border-left: 5px solid #00A651;">
-            <p style="font-size: 20px;">⚕️</p>
-            <h4 style="margin-bottom:0;">Health Tracking</h4>
-            <p style="font-size: 0.8rem; color: #90A4AE;">Monitor your recovery with real-time health milestones</p>
+        <div class="feature-box">
+            <div class="feature-icon" style="color: #059669;">⚕️</div>
+            <div class="feature-title">Health Tracking</div>
+            <div class="feature-desc">Monitor your recovery with real-time health milestones</div>
         </div>
     """, unsafe_allow_html=True)
 
 with f3:
     st.markdown("""
-        <div class="feature-card" style="border-left: 5px solid #9C27B0;">
-            <p style="font-size: 20px;">🍷</p>
-            <h4 style="margin-bottom:0;">Multiple Addictions</h4>
-            <p style="font-size: 0.8rem; color: #90A4AE;">Support for smoking, tobacco, and alcohol cessation</p>
+        <div class="feature-box">
+            <div class="feature-icon" style="color: #9333EA;">🍷</div>
+            <div class="feature-title">Multiple Addictions</div>
+            <div class="feature-desc">Support for smoking, tobacco, and alcohol cessation</div>
         </div>
     """, unsafe_allow_html=True)

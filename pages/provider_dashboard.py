@@ -17,13 +17,27 @@ patients = [
 
 patient_names = [p["name"] for p in patients]
 
+# Initialize dynamic tasks in session state if they don't exist yet
+if 'patient_tasks' not in st.session_state:
+    st.session_state.patient_tasks = {
+        new_patient_name: [
+            "Take a 5-minute walk", 
+            "Drink 2L of water", 
+            "Practice deep breathing for 5 minutes", 
+            "Eat a healthy breakfast", 
+            "Avoid triggers (identify and note them)"
+        ],
+        "Rahul Sharma": ["Chew sugar-free gum when craving hits", "Drink 2L of water", "10-minute meditation"],
+        "Priya Patel": ["Keep mouth busy with mints", "Avoid friends who chew tobacco today"]
+    }
+
 # --- 1. RECORD CO READING DIALOG ---
 @st.dialog("Record CO Reading")
 def show_co_dialog(default_name=None):
     st.write("Add a new Carbon Monoxide meter reading for the patient")
     default_idx = patient_names.index(default_name) if default_name in patient_names else 0
     
-    st.selectbox("Select Patient", options=patient_names, index=default_idx)
+    st.selectbox("Select Patient", options=patient_names, index=default_idx, key="co_select")
     st.text_input("CO Reading (ppm)", placeholder="e.g., 15")
     st.text_area("Notes (optional)", placeholder="Any additional observations...")
     
@@ -47,7 +61,7 @@ def show_history_dialog(default_name=None):
     st.write("Add detailed case history for the patient")
     default_idx = patient_names.index(default_name) if default_name in patient_names else 0
     
-    st.selectbox("Select Patient", options=patient_names, index=default_idx)
+    st.selectbox("Select Patient", options=patient_names, index=default_idx, key="hist_select")
     st.text_area("Diagnosis *", placeholder="Enter diagnosis details...", height=100)
     st.text_area("Treatment Plan *", placeholder="Enter treatment plan...", height=100)
     st.text_area("Additional Notes", placeholder="Any additional information...", height=80)
@@ -66,7 +80,55 @@ def show_history_dialog(default_name=None):
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 3. MAIN PAGE STYLES ---
+# --- 3. MANAGE DAILY TASKS DIALOG ---
+@st.dialog("Manage Patient Tasks", width="large")
+def show_task_dialog():
+    st.write("Customize the daily checklist your patient will see.")
+    
+    selected_pt = st.selectbox("Select Patient to Manage", options=patient_names, key="task_select")
+    
+    st.markdown(f"**Current active tasks for {selected_pt}:**")
+    
+    # Display current tasks with a Remove button
+    current_tasks = st.session_state.patient_tasks.get(selected_pt, [])
+    
+    if not current_tasks:
+        st.info(f"No tasks currently assigned to {selected_pt}.")
+    else:
+        for i, task in enumerate(current_tasks):
+            col_text, col_btn = st.columns([5, 1])
+            with col_text:
+                st.markdown(f"✅ {task}")
+            with col_btn:
+                # Button to remove the specific task
+                if st.button("❌ Remove", key=f"del_btn_{selected_pt}_{i}"):
+                    st.session_state.patient_tasks[selected_pt].pop(i)
+                    st.rerun()
+    
+    st.markdown("---")
+    
+    # Add new task section
+    st.markdown("**Assign a New Task:**")
+    new_task_input = st.text_input("Task Description", placeholder="e.g., Go for a 10-minute jog", label_visibility="collapsed")
+    
+    st.markdown("""
+        <style>
+        .add-task-btn div.stButton > button { background-color: #1A56DB !important; color: white !important; border-radius: 6px; font-weight: 600; width: 100%; border: none; }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<div class="add-task-btn">', unsafe_allow_html=True)
+    if st.button("➕ Add Task to List", use_container_width=True):
+        if new_task_input.strip() != "":
+            if selected_pt not in st.session_state.patient_tasks:
+                st.session_state.patient_tasks[selected_pt] = []
+            st.session_state.patient_tasks[selected_pt].append(new_task_input)
+            st.rerun()
+        else:
+            st.error("Please enter a task description.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# --- 4. MAIN PAGE STYLES ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -105,7 +167,7 @@ st.markdown("""
     .action-btn div.stButton > button:hover { background: #F1F5F9 !important; border-color: #CBD5E1 !important; color: #0F172A !important; }
 
     /* Tab Specific Styles */
-    .add-reading-btn div.stButton > button { background-color: #1A56DB !important; color: white !important; border-radius: 6px; font-weight: 600; border: none; }
+    .add-reading-btn div.stButton > button, .add-task-main-btn div.stButton > button { background-color: #1A56DB !important; color: white !important; border-radius: 6px; font-weight: 600; border: none; }
     .add-history-btn div.stButton > button { background-color: #9333EA !important; color: white !important; border-radius: 6px; font-weight: 600; border: none; }
     .empty-state { text-align: center; color: #9CA3AF; padding: 40px 0; font-size: 0.95rem; }
     </style>
@@ -130,7 +192,7 @@ with c3: st.markdown('<div class="metric-card card-purple"><div class="card-titl
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# --- 4. INTERACTIVE TABS ---
+# --- 5. INTERACTIVE TABS ---
 tab1, tab2, tab3, tab4 = st.tabs(["Patients", "CO Readings", "Case History", "Daily Tasks"])
 
 with tab1:
@@ -191,4 +253,22 @@ with tab3:
         st.markdown('<div class="empty-state">No case histories recorded yet</div>', unsafe_allow_html=True)
 
 with tab4:
-    st.info("Daily Tasks customization interface coming soon.")
+    with st.container(border=True):
+        col_title, col_btn = st.columns([4, 1])
+        with col_title:
+            st.markdown('<div style="font-weight: 700; color: #111827; font-size: 1.1rem; padding-top: 8px;">📄 Manage Daily Tasks for Patients</div>', unsafe_allow_html=True)
+            st.markdown('<div style="color: #6B7280; font-size: 0.85rem; margin-bottom: 5px;">Customize daily checklist that patients will see</div>', unsafe_allow_html=True)
+        with col_btn:
+            st.markdown('<div class="add-task-main-btn">', unsafe_allow_html=True)
+            if st.button("➕ Add Task", use_container_width=True):
+                show_task_dialog()
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('<hr style="margin: 10px 0; border-color: #E2E8F0; opacity: 0.5;">', unsafe_allow_html=True)
+        
+        # Display the active tasks grouped by patient
+        for p_name, tasks in st.session_state.patient_tasks.items():
+            if tasks:
+                with st.expander(f"Active Tasks Configured for: {p_name} ({len(tasks)} tasks)"):
+                    for t in tasks:
+                        st.markdown(f"- {t}")

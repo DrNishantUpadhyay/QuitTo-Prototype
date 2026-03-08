@@ -57,9 +57,10 @@ with col1:
 with col2:
     st.markdown('<div class="card-container"><div class="icon-wrapper-green"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path></svg></div><div class="card-title">Healthcare Provider</div><div class="card-text">Monitor your patients\' progress and record health metrics</div></div>', unsafe_allow_html=True)
     st.markdown('<div class="provider-btn">', unsafe_allow_html=True)
-    st.button("Provider Login", key="pr_btn")
+    if st.button("Provider Login", key="pr_btn"):
+        st.switch_page("pages/provider_login.py")
     st.markdown('</div>', unsafe_allow_html=True)
-
+    
 st.markdown("<br>", unsafe_allow_html=True)
 f1, f2, f3 = st.columns(3)
 with f1: st.markdown('<div class="feature-box"><div class="feature-icon">🚬</div><div class="feature-title">12-Week Plan</div><div class="feature-desc">Gradual reduction schedule</div></div>', unsafe_allow_html=True)

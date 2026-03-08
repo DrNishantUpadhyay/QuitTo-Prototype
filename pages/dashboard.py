@@ -1,10 +1,13 @@
 import streamlit as st
+import pandas as pd
+import altair as alt
 
 st.set_page_config(page_title="QuitTo - Dashboard", page_icon="💙", layout="wide")
 
 # Get saved data
 name = st.session_state.get('patient_name', 'Raj Kapur')
 usage = st.session_state.get('patient_usage', '10')
+cost_per_pack = st.session_state.get('patient_cost', '150')
 
 # --- 1. TCC POPUP DIALOG ---
 @st.dialog("TCC - Tobacco Cessation Cell", width="large")
@@ -151,24 +154,39 @@ with col_btn:
         st.switch_page("app.py")
     st.markdown('</div>', unsafe_allow_html=True)
 
+# Try to parse usage safely for calculations
+try: 
+    start_usage = int(usage)
+except: 
+    start_usage = 10
+
+try:
+    pack_cost = float(cost_per_pack)
+except:
+    pack_cost = 150.0
+
+# Calculate Daily Savings (Assuming 20 units per pack)
+daily_savings = (start_usage / 20.0) * pack_cost
+weekly_savings = daily_savings * 7
+
 # Top Metrics Cards
 c1, c2, c3 = st.columns(3)
 with c1: 
     st.markdown(f"""
         <div class="metric-card card-blue">
             <div class="card-title">📉 Current Progress</div>
-            <div class="card-value">{usage} units/day</div>
-            <div class="card-desc">Down from {usage} units/day</div>
+            <div class="card-value">{start_usage} units/day</div>
+            <div class="card-desc">Down from {start_usage} units/day</div>
             <div class="progress-bar-bg"><div class="progress-bar-fill" style="color: #1D4ED8;"></div></div>
             <div style="font-size: 0.75rem; color: #6B7280; margin-top: 8px;">0% reduction achieved</div>
         </div>
     """, unsafe_allow_html=True)
 with c2: 
-    st.markdown("""
+    st.markdown(f"""
         <div class="metric-card card-green">
             <div class="card-title">💲 Money Saved</div>
             <div class="card-value">₹0</div>
-            <div class="card-desc">This week<br><br>Daily: ₹0 | Monthly: ₹0</div>
+            <div class="card-desc">This week<br><br>Daily: ₹{int(daily_savings)} | Monthly: ₹{int(daily_savings*30)}</div>
         </div>
     """, unsafe_allow_html=True)
 with c3: 
@@ -189,13 +207,8 @@ tab1, tab2, tab3, tab4 = st.tabs(["📅 Schedule", "✅ Daily Tasks", "⚕️ He
 
 with tab1:
     st.markdown("### 12-Week Reduction Schedule")
-    try: 
-        base_usage = int(usage)
-    except: 
-        base_usage = 10
-        
     for week in range(1, 13):
-        target = max(0, base_usage - (week - 1)) 
+        target = max(0, start_usage - (week - 1)) 
         with st.expander(f"Week {week} - Target: {target} units/day", expanded=(week==1)):
             if week == 1: 
                 st.info("Current Week: Focus on strictly monitoring your intake.")
@@ -225,7 +238,6 @@ with tab2:
             
     st.markdown("<p style='color: #9CA3AF; font-size: 0.8rem; margin-top: 15px;'>Note: Your dentist can customize this checklist specifically for you</p>", unsafe_allow_html=True)
 
-# --- NEW: HEALTH RECOVERY TAB ---
 with tab3: 
     st.markdown("""
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
@@ -235,7 +247,6 @@ with tab3:
         <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 25px;">Track your body's healing progress over time</p>
     """, unsafe_allow_html=True)
 
-    # Detailed milestone list based on your request
     milestones = [
         {"icon": "🌬️", "time": "8 hours", "desc": "Oxygen levels returning to normal"},
         {"icon": "📉", "time": "12 hours", "desc": "Carbon monoxide levels in your blood drop to normal"},
@@ -259,8 +270,63 @@ with tab3:
             </div>
         ''', unsafe_allow_html=True)
 
+# --- NEW: ANALYTICS TAB ---
+with tab4: 
+    with st.container(border=True):
+        st.markdown("""
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+                <h3 style="margin: 0; color: #111827; font-size: 1.1rem;">Usage Trend</h3>
+            </div>
+            <p style="color: #6B7280; font-size: 0.85rem; margin-bottom: 25px;">Your declining usage over the 12-week period</p>
+        """, unsafe_allow_html=True)
 
-with tab4: st.write("Analytics coming soon...")
+        # Generating Dummy Data for Chart
+        trend_data = []
+        current_u = start_usage
+        for w in range(1, 13):
+            trend_data.append(max(0, current_u))
+            if w % 2 == 0:  # Drop simulated usage slightly every 2 weeks
+                current_u -= 2
+
+        df = pd.DataFrame({
+            "Week": [i for i in range(1, 13)],
+            "Units/day": trend_data
+        })
+
+        # Altair Line Chart exactly like Figma
+        chart = alt.Chart(df).mark_line(point=True, color="#3B82F6", strokeWidth=2).encode(
+            x=alt.X('Week:O', axis=alt.Axis(labelAngle=0, grid=True)),
+            y=alt.Y('Units/day:Q', title="Units/day", scale=alt.Scale(domain=[0, max(12, start_usage)]))
+        ).properties(height=250)
+        
+        st.altair_chart(chart, use_container_width=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    with st.container(border=True):
+        st.markdown("""
+            <h3 style="margin: 0; color: #111827; font-size: 1.1rem; margin-bottom: 20px;">Financial Savings Projection</h3>
+        """, unsafe_allow_html=True)
+        
+        m1 = int(daily_savings * 30)
+        m3 = int(daily_savings * 90)
+        y1 = int(daily_savings * 365)
+        
+        st.markdown(f'''
+            <div style="background: #F0F9FF; border: 1px solid #E0F2FE; border-radius: 8px; padding: 15px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="color: #0369A1; font-weight: 500;">1 Month</div>
+                <div style="color: #0369A1; font-weight: 700; font-size: 1.1rem;">₹{m1:,}</div>
+            </div>
+            <div style="background: #F0FDF4; border: 1px solid #DCFCE7; border-radius: 8px; padding: 15px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="color: #15803D; font-weight: 500;">3 Months</div>
+                <div style="color: #15803D; font-weight: 700; font-size: 1.1rem;">₹{m3:,}</div>
+            </div>
+            <div style="background: #FAF5FF; border: 1px solid #F3E8FF; border-radius: 8px; padding: 15px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="color: #7E22CE; font-weight: 500;">1 Year</div>
+                <div style="color: #7E22CE; font-weight: 700; font-size: 1.1rem;">₹{y1:,}</div>
+            </div>
+        ''', unsafe_allow_html=True)
+
 
 st.markdown("<br><hr style='opacity: 0.2;'>", unsafe_allow_html=True)
 

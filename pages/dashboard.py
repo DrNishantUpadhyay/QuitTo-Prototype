@@ -59,6 +59,7 @@ def show_tcc_popup():
         image_url = "https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/dr_hemant.jpg.jpeg"
         st.markdown(f'<img src="{image_url}" class="dr-img">', unsafe_allow_html=True)
 
+
 # --- 2. DEVELOPER POPUP DIALOG ---
 @st.dialog("Developer Information", width="large")
 def show_dev_popup():
@@ -203,13 +204,38 @@ with tab1:
             st.write(f"**Goal:** Limit consumption to {target} units per day.")
             st.checkbox(f"I completed my targets for Week {week}", key=f"w{week}")
             
-with tab2: st.write("Daily tasks coming soon...")
+# --- NEW: DAILY TASKS TAB ---
+with tab2: 
+    st.markdown("""
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <h3 style="margin: 0; color: #111827;">Today's Tasks</h3>
+        </div>
+        <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 25px;">Complete these daily activities to support your recovery</p>
+    """, unsafe_allow_html=True)
+
+    # Ye wo list hai jise Dentist baad mein customize kar sakte hain
+    daily_tasks_list = [
+        "Take a 5-minute walk",
+        "Drink 2L of water",
+        "Practice deep breathing for 5 minutes",
+        "Eat a healthy breakfast",
+        "Avoid triggers (identify and note them)"
+    ]
+
+    # Har ek task ko ek sundar card (border) mein dikhana
+    for i, task in enumerate(daily_tasks_list):
+        with st.container(border=True):
+            st.checkbox(task, key=f"daily_task_{i}")
+            
+    st.markdown("<p style='color: #9CA3AF; font-size: 0.8rem; margin-top: 15px;'>Note: Your dentist can customize this checklist specifically for you</p>", unsafe_allow_html=True)
+
 with tab3: st.write("Health recovery coming soon...")
 with tab4: st.write("Analytics coming soon...")
 
 st.markdown("<br><hr style='opacity: 0.2;'>", unsafe_allow_html=True)
 
-# --- 4. BOTTOM BUTTONS (Triggers) ---
+# --- 4. BOTTOM BUTTONS ---
 st.markdown('<div class="tcc-btn">', unsafe_allow_html=True)
 if st.button("📞 Contact TCC - Tobacco Cessation Cell", use_container_width=True):
     show_tcc_popup()

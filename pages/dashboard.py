@@ -6,7 +6,7 @@ st.set_page_config(page_title="QuitTo - Dashboard", page_icon="💙", layout="wi
 name = st.session_state.get('patient_name', 'Raj Kapur')
 usage = st.session_state.get('patient_usage', '10')
 
-# --- 1. DEFINE THE POPUP DIALOG HERE ---
+# --- 1. TCC POPUP DIALOG ---
 @st.dialog("TCC - Tobacco Cessation Cell", width="large")
 def show_tcc_popup():
     st.markdown("""
@@ -56,12 +56,49 @@ def show_tcc_popup():
         """, unsafe_allow_html=True)
 
     with col_img:
-        # User's uploaded photo link
         image_url = "https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/dr_hemant.jpg.jpeg"
         st.markdown(f'<img src="{image_url}" class="dr-img">', unsafe_allow_html=True)
 
+# --- 2. DEVELOPER POPUP DIALOG ---
+@st.dialog("Developer Information", width="large")
+def show_dev_popup():
+    st.markdown("""
+        <style>
+        .dev-subtitle { color: #6B7280; font-size: 0.95rem; margin-bottom: 25px; margin-top: -10px; text-align: center; }
+        .dev-card { text-align: center; padding: 20px; background: #F8FAFC; border-radius: 16px; border: 1px solid #E2E8F0; height: 100%; }
+        .dev-img { width: 140px; height: 140px; object-fit: cover; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .dev-name { font-size: 1.2rem; font-weight: 700; color: #1E293B; margin-bottom: 5px; }
+        .dev-role { font-size: 0.9rem; color: #059669; font-weight: 600; margin-bottom: 15px; }
+        .dev-email { font-size: 0.85rem; color: #4B5563; background: white; padding: 8px 12px; border-radius: 8px; border: 1px solid #E2E8F0; display: inline-block; }
+        .dev-email a { color: #1A56DB; text-decoration: none; font-weight: 500; }
+        </style>
+        <div class="dev-subtitle">Meet the team behind the QuitTo App</div>
+    """, unsafe_allow_html=True)
 
-# --- 2. MAIN PAGE STYLES ---
+    c1, c2 = st.columns(2, gap="medium")
+
+    with c1:
+        st.markdown(f'''
+            <div class="dev-card">
+                <img src="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/dr_nishant.jpg" class="dev-img">
+                <div class="dev-name">Dr. Nishant Upadhyay</div>
+                <div class="dev-role">Founder & Lead Developer</div>
+                <div class="dev-email">📧 <a href="mailto:nishant78913@gmail.com">nishant78913@gmail.com</a></div>
+            </div>
+        ''', unsafe_allow_html=True)
+
+    with c2:
+        st.markdown(f'''
+            <div class="dev-card">
+                <img src="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/laxmi_sharma.jpg" class="dev-img">
+                <div class="dev-name">Laxmi Raj Sharma</div>
+                <div class="dev-role">Co-Founder & UI/UX Lead</div>
+                <div class="dev-email">📧 <a href="mailto:laxmirajsharma06@gmail.com">laxmirajsharma06@gmail.com</a></div>
+            </div>
+        ''', unsafe_allow_html=True)
+
+
+# --- 3. MAIN PAGE STYLES ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -98,7 +135,9 @@ st.markdown("""
 
     .tcc-btn div.stButton > button { background: linear-gradient(90deg, #1A56DB 0%, #059669 100%) !important; color: white !important; border-radius: 8px; height: 50px; font-weight: 600; border: none; width: 100%; transition: 0.3s; }
     .tcc-btn div.stButton > button:hover { box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4); }
-    .white-btn div.stButton > button { background: white !important; color: #4B5563 !important; border-radius: 8px; height: 50px; font-weight: 600; border: 1px solid #E5E7EB !important; margin-top: 10px; width: 100%; }
+    
+    .white-btn div.stButton > button { background: white !important; color: #4B5563 !important; border-radius: 8px; height: 50px; font-weight: 600; border: 1px solid #E5E7EB !important; margin-top: 10px; width: 100%; transition: 0.3s; }
+    .white-btn div.stButton > button:hover { background: #F8FAFC !important; border-color: #CBD5E1 !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -170,12 +209,13 @@ with tab4: st.write("Analytics coming soon...")
 
 st.markdown("<br><hr style='opacity: 0.2;'>", unsafe_allow_html=True)
 
-# --- 3. BOTTOM BUTTONS ---
+# --- 4. BOTTOM BUTTONS (Triggers) ---
 st.markdown('<div class="tcc-btn">', unsafe_allow_html=True)
 if st.button("📞 Contact TCC - Tobacco Cessation Cell", use_container_width=True):
     show_tcc_popup()
 st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('<div class="white-btn">', unsafe_allow_html=True)
-st.button("</> Developer Information", use_container_width=True)
+if st.button("</> Developer Information", use_container_width=True):
+    show_dev_popup()
 st.markdown('</div>', unsafe_allow_html=True)

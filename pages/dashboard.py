@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="QuitTo - Dashboard", page_icon="💙", layout="wide")
 
-# Get saved data from session state
+# Get saved data
 name = st.session_state.get('patient_name', 'Raj Kapur')
 usage = st.session_state.get('patient_usage', '10')
 
@@ -18,9 +18,8 @@ def show_tcc_popup():
         .tcc-text { font-size: 0.85rem; color: #4B5563; line-height: 1.4; }
         .dr-img { width: 100%; height: 280px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         </style>
+        <div class="tcc-subtitle">Get professional support for your recovery journey</div>
     """, unsafe_allow_html=True)
-
-    st.markdown('<div class="tcc-subtitle">Get professional support for your recovery journey</div>', unsafe_allow_html=True)
 
     col_info, col_img = st.columns([1.2, 1], gap="medium")
 
@@ -57,7 +56,7 @@ def show_tcc_popup():
         """, unsafe_allow_html=True)
 
     with col_img:
-        # Aapka photo wala link
+        # User's uploaded photo link
         image_url = "https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/dr_hemant.jpg.jpeg"
         st.markdown(f'<img src="{image_url}" class="dr-img">', unsafe_allow_html=True)
 
@@ -97,7 +96,6 @@ st.markdown("""
     .progress-bar-bg { background-color: rgba(0,0,0,0.1); border-radius: 10px; height: 6px; width: 100%; }
     .progress-bar-fill { background-color: currentColor; border-radius: 10px; height: 6px; width: 5%; }
 
-    /* Button Styles */
     .tcc-btn div.stButton > button { background: linear-gradient(90deg, #1A56DB 0%, #059669 100%) !important; color: white !important; border-radius: 8px; height: 50px; font-weight: 600; border: none; width: 100%; transition: 0.3s; }
     .tcc-btn div.stButton > button:hover { box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4); }
     .white-btn div.stButton > button { background: white !important; color: #4B5563 !important; border-radius: 8px; height: 50px; font-weight: 600; border: 1px solid #E5E7EB !important; margin-top: 10px; width: 100%; }
@@ -111,11 +109,73 @@ with col_head:
     st.markdown('<div class="dash-subtext">Week 1 of 12</div>', unsafe_allow_html=True)
 with col_btn:
     st.markdown('<div style="text-align: right; margin-top: 10px;">', unsafe_allow_html=True)
-    if st.button("🚪 Logout"): st.switch_page("app.py")
+    if st.button("🚪 Logout"): 
+        st.switch_page("app.py")
     st.markdown('</div>', unsafe_allow_html=True)
 
 # Top Metrics Cards
 c1, c2, c3 = st.columns(3)
-with c1: st.markdown(f'<div class="metric-card card-blue"><div class="card-title">📉 Current Progress</div><div class="card-value">{usage} units/day</div><div class="card-desc">Down from {usage} units/day</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="color: #1D4ED8;"></div></div><div style="font-size: 0.75rem; color: #6B7280; margin-top: 8px;">0% reduction achieved</div></div>', unsafe_allow_html=True)
-with c2: st.markdown('<div class="metric-card card-green"><div class="card-title">💲 Money Saved</div><div class="card-value">₹0</div><div class="card-desc">This week<br><br>Daily: ₹0 | Monthly: ₹0</div></div>', unsafe_allow_html=True)
-with c3: st.markdown('<div class="metric-card card-purple"><div class="card-title">✅ Daily Tasks</div><div class="card-value">0/5</div><div class="card-desc">Completed today</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="color: #9333EA;"></div></div><div style="font-size: 0.75rem; color: #6B7280; margin-top: 8px;">0% daily goals
+with c1: 
+    st.markdown(f"""
+        <div class="metric-card card-blue">
+            <div class="card-title">📉 Current Progress</div>
+            <div class="card-value">{usage} units/day</div>
+            <div class="card-desc">Down from {usage} units/day</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="color: #1D4ED8;"></div></div>
+            <div style="font-size: 0.75rem; color: #6B7280; margin-top: 8px;">0% reduction achieved</div>
+        </div>
+    """, unsafe_allow_html=True)
+with c2: 
+    st.markdown("""
+        <div class="metric-card card-green">
+            <div class="card-title">💲 Money Saved</div>
+            <div class="card-value">₹0</div>
+            <div class="card-desc">This week<br><br>Daily: ₹0 | Monthly: ₹0</div>
+        </div>
+    """, unsafe_allow_html=True)
+with c3: 
+    st.markdown("""
+        <div class="metric-card card-purple">
+            <div class="card-title">✅ Daily Tasks</div>
+            <div class="card-value">0/5</div>
+            <div class="card-desc">Completed today</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="color: #9333EA;"></div></div>
+            <div style="font-size: 0.75rem; color: #6B7280; margin-top: 8px;">0% daily goals</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# Tabs Navigation
+tab1, tab2, tab3, tab4 = st.tabs(["📅 Schedule", "✅ Daily Tasks", "⚕️ Health Recovery", "📊 Analytics"])
+
+with tab1:
+    st.markdown("### 12-Week Reduction Schedule")
+    try: 
+        base_usage = int(usage)
+    except: 
+        base_usage = 10
+        
+    for week in range(1, 13):
+        target = max(0, base_usage - (week - 1)) 
+        with st.expander(f"Week {week} - Target: {target} units/day", expanded=(week==1)):
+            if week == 1: 
+                st.info("Current Week: Focus on strictly monitoring your intake.")
+            st.write(f"**Goal:** Limit consumption to {target} units per day.")
+            st.checkbox(f"I completed my targets for Week {week}", key=f"w{week}")
+            
+with tab2: st.write("Daily tasks coming soon...")
+with tab3: st.write("Health recovery coming soon...")
+with tab4: st.write("Analytics coming soon...")
+
+st.markdown("<br><hr style='opacity: 0.2;'>", unsafe_allow_html=True)
+
+# --- 3. BOTTOM BUTTONS ---
+st.markdown('<div class="tcc-btn">', unsafe_allow_html=True)
+if st.button("📞 Contact TCC - Tobacco Cessation Cell", use_container_width=True):
+    show_tcc_popup()
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="white-btn">', unsafe_allow_html=True)
+st.button("</> Developer Information", use_container_width=True)
+st.markdown('</div>', unsafe_allow_html=True)

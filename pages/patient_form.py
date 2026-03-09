@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="QuitTo - Patient", page_icon="💙", layout="wide")
+st.set_page_config(page_title="QuitTo - Patient", page_icon="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/icon.png.png", layout="wide")
 
 st.markdown("""
     <style>

@@ -9,6 +9,27 @@ name = st.session_state.get('patient_name', 'Raj Kapur')
 usage = st.session_state.get('patient_usage', '10')
 cost_per_pack = st.session_state.get('patient_cost', '150')
 
+# --- INITIALIZE SYNCED TASKS ---
+# If the dentist hasn't added tasks yet, we set the default ones here too
+if 'patient_tasks' not in st.session_state:
+    st.session_state.patient_tasks = {
+        name: [
+            "Take a 5-minute walk", 
+            "Drink 2L of water", 
+            "Practice deep breathing for 5 minutes", 
+            "Eat a healthy breakfast", 
+            "Avoid triggers (identify and note them)"
+        ]
+    }
+
+# Fetch the live task list for THIS specific patient
+daily_tasks_list = st.session_state.patient_tasks.get(name, [])
+total_tasks = len(daily_tasks_list)
+
+# Calculate how many tasks the patient has checked off today
+completed_tasks = sum([st.session_state.get(f"task_{name}_{i}", False) for i in range(total_tasks)])
+progress_pct = int((completed_tasks / total_tasks) * 100) if total_tasks > 0 else 0
+
 # --- 1. TCC POPUP DIALOG ---
 @st.dialog("TCC - Tobacco Cessation Cell", width="large")
 def show_tcc_popup():
@@ -133,7 +154,7 @@ st.markdown("""
     .card-desc { font-size: 0.85rem; color: #6B7280; margin-bottom: 15px; }
     
     .progress-bar-bg { background-color: rgba(0,0,0,0.1); border-radius: 10px; height: 6px; width: 100%; }
-    .progress-bar-fill { background-color: currentColor; border-radius: 10px; height: 6px; width: 5%; }
+    .progress-bar-fill { background-color: currentColor; border-radius: 10px; height: 6px; transition: width 0.4s ease; }
 
     .tcc-btn div.stButton > button { background: linear-gradient(90deg, #1A56DB 0%, #059669 100%) !important; color: white !important; border-radius: 8px; height: 50px; font-weight: 600; border: none; width: 100%; transition: 0.3s; }
     .tcc-btn div.stButton > button:hover { box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4); }
@@ -154,20 +175,13 @@ with col_btn:
         st.switch_page("app.py")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Try to parse usage safely for calculations
-try: 
-    start_usage = int(usage)
-except: 
-    start_usage = 10
+try: start_usage = int(usage)
+except: start_usage = 10
 
-try:
-    pack_cost = float(cost_per_pack)
-except:
-    pack_cost = 150.0
+try: pack_cost = float(cost_per_pack)
+except: pack_cost = 150.0
 
-# Calculate Daily Savings (Assuming 20 units per pack)
 daily_savings = (start_usage / 20.0) * pack_cost
-weekly_savings = daily_savings * 7
 
 # Top Metrics Cards
 c1, c2, c3 = st.columns(3)
@@ -177,7 +191,7 @@ with c1:
             <div class="card-title">📉 Current Progress</div>
             <div class="card-value">{start_usage} units/day</div>
             <div class="card-desc">Down from {start_usage} units/day</div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" style="color: #1D4ED8;"></div></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="color: #1D4ED8; width: 5%;"></div></div>
             <div style="font-size: 0.75rem; color: #6B7280; margin-top: 8px;">0% reduction achieved</div>
         </div>
     """, unsafe_allow_html=True)
@@ -190,13 +204,13 @@ with c2:
         </div>
     """, unsafe_allow_html=True)
 with c3: 
-    st.markdown("""
+    st.markdown(f"""
         <div class="metric-card card-purple">
             <div class="card-title">✅ Daily Tasks</div>
-            <div class="card-value">0/5</div>
+            <div class="card-value">{completed_tasks}/{total_tasks}</div>
             <div class="card-desc">Completed today</div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" style="color: #9333EA;"></div></div>
-            <div style="font-size: 0.75rem; color: #6B7280; margin-top: 8px;">0% daily goals</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="color: #9333EA; width: {progress_pct}%;"></div></div>
+            <div style="font-size: 0.75rem; color: #6B7280; margin-top: 8px;">{progress_pct}% daily goals</div>
         </div>
     """, unsafe_allow_html=True)
 
@@ -224,17 +238,13 @@ with tab2:
         <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 25px;">Complete these daily activities to support your recovery</p>
     """, unsafe_allow_html=True)
 
-    daily_tasks_list = [
-        "Take a 5-minute walk",
-        "Drink 2L of water",
-        "Practice deep breathing for 5 minutes",
-        "Eat a healthy breakfast",
-        "Avoid triggers (identify and note them)"
-    ]
-
-    for i, task in enumerate(daily_tasks_list):
-        with st.container(border=True):
-            st.checkbox(task, key=f"daily_task_{i}")
+    if not daily_tasks_list:
+        st.info("You have completed all your tasks or none have been assigned yet. Great job!")
+    else:
+        for i, task in enumerate(daily_tasks_list):
+            with st.container(border=True):
+                # The key connects the checkbox to session_state automatically
+                st.checkbox(task, key=f"task_{name}_{i}")
             
     st.markdown("<p style='color: #9CA3AF; font-size: 0.8rem; margin-top: 15px;'>Note: Your dentist can customize this checklist specifically for you</p>", unsafe_allow_html=True)
 
@@ -270,7 +280,6 @@ with tab3:
             </div>
         ''', unsafe_allow_html=True)
 
-# --- NEW: ANALYTICS TAB ---
 with tab4: 
     with st.container(border=True):
         st.markdown("""
@@ -280,12 +289,11 @@ with tab4:
             <p style="color: #6B7280; font-size: 0.85rem; margin-bottom: 25px;">Your declining usage over the 12-week period</p>
         """, unsafe_allow_html=True)
 
-        # Generating Dummy Data for Chart
         trend_data = []
         current_u = start_usage
         for w in range(1, 13):
             trend_data.append(max(0, current_u))
-            if w % 2 == 0:  # Drop simulated usage slightly every 2 weeks
+            if w % 2 == 0: 
                 current_u -= 2
 
         df = pd.DataFrame({
@@ -293,7 +301,6 @@ with tab4:
             "Units/day": trend_data
         })
 
-        # Altair Line Chart exactly like Figma
         chart = alt.Chart(df).mark_line(point=True, color="#3B82F6", strokeWidth=2).encode(
             x=alt.X('Week:O', axis=alt.Axis(labelAngle=0, grid=True)),
             y=alt.Y('Units/day:Q', title="Units/day", scale=alt.Scale(domain=[0, max(12, start_usage)]))
@@ -326,7 +333,6 @@ with tab4:
                 <div style="color: #7E22CE; font-weight: 700; font-size: 1.1rem;">₹{y1:,}</div>
             </div>
         ''', unsafe_allow_html=True)
-
 
 st.markdown("<br><hr style='opacity: 0.2;'>", unsafe_allow_html=True)
 

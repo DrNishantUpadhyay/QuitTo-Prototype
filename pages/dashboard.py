@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
-st.set_page_config(page_title="QuitTo - Dashboard", page_icon="💙", layout="wide")
+st.set_page_config(page_title="QuitTo - Dashboard", page_icon="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/icon.png.png", layout="wide")
 
 # Get saved data
 name = st.session_state.get('patient_name', 'Raj Kapur')

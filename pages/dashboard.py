@@ -216,8 +216,9 @@ with c3:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Tabs Navigation
-tab1, tab2, tab3, tab4 = st.tabs(["📅 Schedule", "✅ Daily Tasks", "⚕️ Health Recovery", "📊 Analytics"])
+# --- Tabs Navigation ---
+# We added a 5th tab for the AI Assistant!
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["📅 Schedule", "✅ Daily Tasks", "⚕️ Health Recovery", "📊 Analytics", "🤖 AI Assistant"])
 
 with tab1:
     st.markdown("### 12-Week Reduction Schedule")
@@ -243,7 +244,6 @@ with tab2:
     else:
         for i, task in enumerate(daily_tasks_list):
             with st.container(border=True):
-                # The key connects the checkbox to session_state automatically
                 st.checkbox(task, key=f"task_{name}_{i}")
             
     st.markdown("<p style='color: #9CA3AF; font-size: 0.8rem; margin-top: 15px;'>Note: Your dentist can customize this checklist specifically for you</p>", unsafe_allow_html=True)
@@ -333,6 +333,55 @@ with tab4:
                 <div style="color: #7E22CE; font-weight: 700; font-size: 1.1rem;">₹{y1:,}</div>
             </div>
         ''', unsafe_allow_html=True)
+
+# --- NEW: AI Chatbot Tab ---
+with tab5:
+    st.markdown("""
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+            <h3 style="margin: 0; color: #111827;">QuitTo Recovery Agent</h3>
+        </div>
+        <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 25px;">Available 24/7 to help you manage cravings and answer recovery questions.</p>
+    """, unsafe_allow_html=True)
+
+    with st.container(border=True, height=400):
+        # Initialize chat history if empty
+        if "messages" not in st.session_state:
+            st.session_state.messages = [
+                {"role": "assistant", "content": f"Hi {name}! I'm your QuitTo support agent. How are you feeling right now? If you're having a craving, just let me know."}
+            ]
+
+        # Display all past chat messages
+        for message in st.session_state.messages:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+
+        # Create the chat input box
+        if prompt := st.chat_input("Type a message (e.g., 'I have a strong craving right now')"):
+            # Display what the user typed
+            with st.chat_message("user"):
+                st.markdown(prompt)
+            # Save user message
+            st.session_state.messages.append({"role": "user", "content": prompt})
+
+            # Mock AI Logic (Perfect for Demo!)
+            user_text = prompt.lower()
+            if "craving" in user_text or "urge" in user_text or "want to smoke" in user_text:
+                bot_reply = "I hear you. Cravings usually peak and pass within 5 to 10 minutes. Try this: Take a deep breath in for 4 seconds, hold for 4, and exhale for 6. Keep your hands busy right now—maybe grab a glass of cold water. You can get through this!"
+            elif "stress" in user_text or "anxious" in user_text:
+                bot_reply = "Stress is a huge trigger. Remember that smoking or drinking only masks the stress temporarily. Let's redirect that energy: can you try taking a quick 5-minute walk or listening to your favorite song?"
+            elif "thank" in user_text:
+                bot_reply = "You're very welcome! I'm always here for you. Stay strong on your journey!"
+            else:
+                bot_reply = "That's completely normal during recovery. Remember to check your 'Daily Tasks' tab and focus on one step at a time. I'm here to support you!"
+
+            # Display the bot's response
+            with st.chat_message("assistant"):
+                st.markdown(bot_reply)
+            # Save bot message
+            st.session_state.messages.append({"role": "assistant", "content": bot_reply})
+            
+            # Force a rerun to update the UI
+            st.rerun()
 
 st.markdown("<br><hr style='opacity: 0.2;'>", unsafe_allow_html=True)
 

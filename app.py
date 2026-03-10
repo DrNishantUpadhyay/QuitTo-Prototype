@@ -1,6 +1,7 @@
 import streamlit as st
 
-st.set_page_config(page_title="QuitTo", page_icon="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/icon.png.png", layout="wide")
+# Replace your old st.set_page_config line with this one:
+st.set_page_config(page_title="QuitTo", page_icon="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Images/main/icon.png.png", layout="wide")
 
 # CSS to hide default sidebar and add Figma styling
 st.markdown("""

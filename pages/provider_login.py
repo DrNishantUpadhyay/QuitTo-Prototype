@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 
-st.set_page_config(page_title="QuitTo - Provider Login", page_icon="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/icon.png.png", layout="wide")
+st.set_page_config(page_title="QuitTo", page_icon="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Images/main/icon.png.png", layout="wide")
 
 st.markdown("""
     <style>

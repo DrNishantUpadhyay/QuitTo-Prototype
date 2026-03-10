@@ -80,7 +80,7 @@ def show_tcc_popup():
         """, unsafe_allow_html=True)
 
     with col_img:
-        image_url = "https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/dr_hemant.jpg.jpeg"
+        image_url = "https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Images/main/dr_hemant.jpg.jpeg"
         st.markdown(f'<img src="{image_url}" class="dr-img">', unsafe_allow_html=True)
 
 # --- 2. DEVELOPER POPUP DIALOG ---

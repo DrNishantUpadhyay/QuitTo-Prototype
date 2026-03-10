@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 
-st.set_page_config(page_title="QuitTo - Provider Dashboard", page_icon="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Prototype/main/icon.png.png", layout="wide")
+st.set_page_config(page_title="QuitTo", page_icon="https://raw.githubusercontent.com/DrNishantUpadhyay/QuitTo-Images/main/icon.png.png", layout="wide")
 
 # Get the newly registered patient from session state, or use a default
 new_patient_name = st.session_state.get('patient_name', 'Raj Kapur')
